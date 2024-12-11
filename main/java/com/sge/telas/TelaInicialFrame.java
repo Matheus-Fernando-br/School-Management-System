@@ -16,7 +16,7 @@ public class TelaInicialFrame extends JFrame {
         setSize(800, 600);
         setLocationRelativeTo(null); // Centralizando a tela no sistema
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Criando o painel do cabeçalho com o nome Unileste
@@ -54,15 +54,36 @@ JButton cursoAnalise = new JButton("<html> Análise e Desenvolvimento de Sistema
 JButton cursoCiencia = new JButton("<html> Ciência da Computação </html>");
 JButton cursoEngenharia = new JButton("<html> Engenharia de Software </html>");
 
+cursoAnalise.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e){
+        setVisible(false);
+        new ConsultarCursoFrame("Análise e Desenvolvimento de Sistemas").setVisible(true);
+    }
+});
+
+cursoCiencia.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e){
+        setVisible(false);
+        new ConsultarCursoFrame("Ciência da Computação").setVisible(true);
+    }
+});
+
+cursoEngenharia.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e){
+        setVisible(false);
+        new ConsultarCursoFrame("Engenharia de Software").setVisible(true);
+    }
+});
+
 // Centralizando o texto dentro dos botões
 cursoAnalise.setHorizontalAlignment(SwingConstants.CENTER);
 cursoCiencia.setHorizontalAlignment(SwingConstants.CENTER);
 cursoEngenharia.setHorizontalAlignment(SwingConstants.CENTER);
 
 // Adicionando o afastamento nas laterais dos botões
-cursoAnalise.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50)); // 10 pixels de afastamento nas laterais
-cursoCiencia.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50)); // 10 pixels de afastamento nas laterais
-cursoEngenharia.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50)); // 10 pixels de afastamento nas laterais
+cursoAnalise.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50)); 
+cursoCiencia.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50)); 
+cursoEngenharia.setBorder(BorderFactory.createEmptyBorder(0, 50, 0, 50)); 
 
 // Adicionando os botões ao painel
 opcoes.add(cursoAnalise);
@@ -73,7 +94,7 @@ opcoes.add(cursoEngenharia);
 // Criando um painel para a frase final (rodapé)
 JPanel rodape = new JPanel();
 rodape.setLayout(new FlowLayout(FlowLayout.CENTER)); // Alinhamento centralizado
-JLabel fraseRodape = new JLabel("Projeto desenvolvido por Matheus, Eduardo e Gabriel");
+JLabel fraseRodape = new JLabel("Projeto desenvolvido por Matheus Fernando");
 rodape.add(fraseRodape);
 
 // Adicionando os componentes (botões e rodapé) ao painel principal (painelInferior)
@@ -167,12 +188,12 @@ add(painelInferior, BorderLayout.SOUTH);
             }
         });
 
-        // Manipulador de Eventos para o botão Cadastrar Curso
+        // Manipulador de Eventos para o botão Matricular Aluno
         itemCadastrarMatricula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                new ConsultarAlunoFrame().setVisible(true);
+                new MatricularAlunoFrame().setVisible(true);
             }
         });
 
@@ -187,14 +208,14 @@ add(painelInferior, BorderLayout.SOUTH);
 
         // Manipulador de Eventos para o item Fale Conosco
         itemFaleConosco.addActionListener(e -> JOptionPane.showMessageDialog(null, """
-                Aluno: Matheus / RA: \n
-                E-mail: matheus1030br@gmail.com  \n
+                Aluno: Matheus / RA: 07251258 \n
                 -------------------------------------------- \n
-                Aluno: Eduardo Alfredo Reis Nascimento / RA: \n
-                E-mail: eduardo.alfredo@a.unileste.edu.br \n
+                E-mail: matheus1030br@gmail.com \n
                 -------------------------------------------- \n
-                Aluno: Gabriel Camilo / RA: \n
-                E-mail:"""));
+                Instagram: matheus_marthins_ \n
+                -------------------------------------------- \n
+                GitHub: Matheus-Fernando-br \n
+                """));
 
         // Manipulador de Eventos para o item Sobre Nós
         itemSobreNos.addActionListener(e -> JOptionPane.showMessageDialog(null, """

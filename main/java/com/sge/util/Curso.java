@@ -1,45 +1,53 @@
 package com.sge.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.sge.telas.CadastrarAlunoFrame;
+
 public class Curso {
-    private final String id;
     private String name;
 
-    public Curso(String id, String name){
-        this.id = id;
+    // Lista estática para armazenar os alunos cadastrados
+    private static List<Aluno> alunosCadastrados = new ArrayList<>();
+
+    public Curso(String name){
+ 
         this.name = name;
     }
 
-    //Getters
-    public String getId(){
-        return id;
-    }
-
+    // Getters
     public String getName(){
         return name;
     }
 
-    //Setters
+  
+    // Setters
     public void setName(String name){
         this.name = name;
     }
 
-    public void addAluno(Aluno aluno){
+  
 
+    public void addAluno(Aluno aluno){
+        alunosCadastrados.add(aluno); // Implementado o método addAluno
     }
 
     public void removeAluno(Aluno aluno){
-
+        alunosCadastrados.remove(aluno); // Implementado o método removeAluno
     }
 
-    //Verificando o ID
-    public boolean equals(Curso curso2){
-        return this.id.equals(curso2.id);
-    }
-    //Retornando informações do Curso
+    // Retornando informações do Curso
+    @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("Nome: ").append(name).append("\n");
-        sb.append("ID: ").append(id).append("\n");
-        return sb.toString();
+        sb.append("Nome: ").append(name);
+           return sb.toString();
     }
+
+    // Método para obter a lista de alunos cadastrados
+    public static List<Aluno> getAlunosCadastrados() {
+        return alunosCadastrados; // Retorna a lista estática de alunos
+    }
+
 }

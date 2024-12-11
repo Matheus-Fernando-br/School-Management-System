@@ -7,15 +7,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class ConsultarAlunoFrame extends JFrame {
+public class MatricularAlunoFrame extends JFrame {
 
     private JTextField alunoIdField; // Campo para nome do aluno
-    private JButton consultar, editar, excluir, voltar;
+    private JButton consultar, cancelar, matricular; // Botão Matricular adicionado
     private JTextArea resultadoArea; // Área de texto para exibir resultados
     private Aluno alunoSelecionado;
 
-    public ConsultarAlunoFrame() {
-        setTitle("Consultar Aluno");
+    public MatricularAlunoFrame() {
+        setTitle("Matricular Aluno");
         setSize(400, 450);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -39,11 +39,14 @@ public class ConsultarAlunoFrame extends JFrame {
         consultar = new JButton("Consultar");
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Preencher horizontalmente
-gbc.gridwidth = GridBagConstraints.REMAINDER; // Ocupa o restante da 
+        gbc.fill = GridBagConstraints.NONE;
         add(consultar, gbc);
 
-       
+        // Botão Cancelar
+        cancelar = new JButton("Cancelar");
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        add(cancelar, gbc);
 
         // Área de texto para mostrar o resultado
         resultadoArea = new JTextArea(10, 30);
@@ -55,27 +58,27 @@ gbc.gridwidth = GridBagConstraints.REMAINDER; // Ocupa o restante da
         gbc.fill = GridBagConstraints.BOTH;
         add(scrollPane, gbc);
 
-        // Botão Editar
-        editar = new JButton("Editar");
+        //Frase Curso
         gbc.gridx = 0;
         gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(editar, gbc);
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        add(new JLabel("Curso:"), gbc);
 
-        //Botão Excluir
-        excluir = new JButton("Excluir");
+        //Opção Cursos
+        
+        String[] cursos = {"Análise e Desenvolvimento de Sistemas", "Ciência da Computação", "Engenharia de Software"};
+    JComboBox<String> cursoComboBox = new JComboBox<>(cursos);
+gbc.gridx = 1;
+gbc.gridy = 3;
+        add(cursoComboBox, gbc);
+
+        // Botão Matricular (aba de matricular o aluno)
+        matricular = new JButton("Matricular");
         gbc.gridx = 0;
         gbc.gridy = 4;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(excluir, gbc);
-
-        //Botão Voltar
-        voltar = new JButton("Voltar");
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.fill = GridBagConstraints.BOTH;
-        add(voltar, gbc);
-
+        gbc.gridwidth = 2; // O botão ocupa duas colunas
+        add(matricular, gbc);
 
         // Manipulador de eventos para o botão Consultar
         consultar.addActionListener(new ActionListener() {
@@ -95,13 +98,42 @@ gbc.gridwidth = GridBagConstraints.REMAINDER; // Ocupa o restante da
             }
         });
 
-        // Manipulador de eventos para o botão Voltar
-
-        voltar.addActionListener(new ActionListener() {
+        // Manipulador de eventos para o botão Cancelar
+        cancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Operação Cancelada","Atenção",JOptionPane.ERROR_MESSAGE);
                 setVisible(false);
                 new TelaInicialFrame().setVisible(true);
+            }
+        });
+
+        // Manipulador de eventos para o botão Matricular
+        matricular.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (alunoSelecionado != null) { // Verifica se um aluno foi selecionado
+                    String[] cursosDisponiveis = {"Análise e Desenvolvimento de Sistemas", "Ciência da Computação", "Engenharia de Software"};
+                    String cursoEscolhido = (String) JOptionPane.showInputDialog(
+                            null,
+                            "Selecione o curso para matricular:",
+                            "Matricular Aluno",
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            cursosDisponiveis,
+                            cursosDisponiveis[0]
+                    );
+
+                    if (cursoEscolhido != null) { // Verifica se um curso foi selecionado
+                        Curso cursoSelecionado = new Curso(cursoEscolhido); // Cria uma instância do curso selecionado
+                        cursoSelecionado.addAluno(alunoSelecionado); // Matricula o aluno no curso
+                        JOptionPane.showMessageDialog(null, "Aluno matriculado com sucesso no curso: " + cursoEscolhido);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Nenhum curso foi selecionado.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Por favor, consulte e selecione um aluno antes de matricular.");
+                }
             }
         });
 

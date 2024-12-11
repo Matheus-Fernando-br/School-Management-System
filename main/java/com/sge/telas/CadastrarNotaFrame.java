@@ -4,21 +4,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import com.sge.util.Aluno;
+import java.util.List;
 
 public class CadastrarNotaFrame extends JFrame {
 
-    private JTextField notaIdField, alunoIdField; // Campo para nome do aluno
-    private JButton consultar, cancelar;
-    private JTextArea resultadoArea; // Área de texto para exibir resultados
+    private JTextField notaField, alunoIdField;
+    private JButton consultar, cancelar, cadastrarNota;
+    private JTextArea resultadoArea;
+    private Aluno alunoSelecionado;
 
     public CadastrarNotaFrame() {
         setTitle("Cadastrar Nota");
-        setSize(400, 450); // Aumentando o tamanho da janela para acomodar os novos componentes
+        setSize(400, 450);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new GridBagLayout()); // Usando GridBagLayout para melhor controle de posicionamento
-        GridBagConstraints gbc = new GridBagConstraints(); // Constraints para posicionamento flexível
+        setResizable(false);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
         // Adicionando o campo para pesquisa por nome
         gbc.gridx = 0;
@@ -26,26 +29,23 @@ public class CadastrarNotaFrame extends JFrame {
         gbc.anchor = GridBagConstraints.WEST;
         add(new JLabel("Nome do Aluno:"), gbc);
 
-        alunoIdField = new JTextField(20); // Campo para nome do aluno
+        alunoIdField = new JTextField(20);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(alunoIdField, gbc);
 
-        // Botão Consultar
         consultar = new JButton("Pesquisar");
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.NONE;
         add(consultar, gbc);
 
-        // Botão Cancelar
         cancelar = new JButton("Cancelar");
         gbc.gridx = 1;
         gbc.gridy = 1;
         add(cancelar, gbc);
 
-        // Área de texto para mostrar o resultado
         resultadoArea = new JTextArea(10, 30);
         resultadoArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(resultadoArea);
@@ -55,30 +55,23 @@ public class CadastrarNotaFrame extends JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         add(scrollPane, gbc);
 
-        //Inserir Nota
-        // Adicionando o campo para Nota
         gbc.gridx = 0;
         gbc.gridy = 3;
+        gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        add(new JLabel("Nome do Aluno:"), gbc);
-        
-        
-        notaIdField = new JTextField(20); // Campo para Inserir Nota
+        add(new JLabel("Nota:"), gbc);
+
+        notaField = new JTextField(20);
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(notaIdField, gbc);
-        
-        
-        
-        // Botões adicionais
-        JPanel painelBotoes = new JPanel();
-        painelBotoes.setLayout(new GridLayout(1, 3, 10, 10)); // Layout para os botões de ação
+        add(notaField, gbc);
 
-        JButton cadastrarButton = new JButton("Cadastrar Nota");
-        
-        painelBotoes.add(cadastrarButton);
-        
+        JPanel painelBotoes = new JPanel();
+        painelBotoes.setLayout(new GridLayout(1, 3, 10, 10));
+
+        cadastrarNota = new JButton("Cadastrar Nota");
+        painelBotoes.add(cadastrarNota);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -86,38 +79,60 @@ public class CadastrarNotaFrame extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(painelBotoes, gbc);
 
-        // Manipulador de eventos para o botão Consultar
         consultar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String nomeAluno = notaIdField.getText();
+                String nomeAluno = alunoIdField.getText();
                 if (!nomeAluno.isEmpty()) {
-                    // Simulação de consulta ao banco de dados
-                    resultadoArea.setText("Consultando informações do aluno: " + nomeAluno);
-                    // Aqui você faria a busca no banco de dados, por exemplo:
-                    // String resultado = consultarAlunoNoBanco(nomeAluno);
-                    // resultadoArea.setText(resultado);
+                    alunoSelecionado = buscarAluno(nomeAluno);
+                    if (alunoSelecionado != null) {
+                        resultadoArea.setText(alunoSelecionado.toString());
+                    } else {
+                        resultadoArea.setText("Aluno não encontrado.");
+                    }
                 } else {
                     resultadoArea.setText("Por favor, insira o nome do aluno.");
                 }
             }
         });
 
-        // Manipulador de eventos para o botão Cancelar
-        cancelar.addActionListener(new ActionListener() {
+        cadastrarNota.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Aqui você pode fechar a janela atual e abrir a Tela Inicial
-                setVisible(false); // Fecha a janela atual
-                new TelaInicialFrame().setVisible(true); // Abre a Tela Inicial
+                if (alunoSelecionado != null) {
+                    try {
+                        double nota = Double.parseDouble(notaField.getText());
+                        alunoSelecionado.setNota(nota); // Atualiza a nota do aluno
+                        JOptionPane.showMessageDialog(null, "Nota cadastrada com sucesso!");
+                        resultadoArea.setText(alunoSelecionado.toString());
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Por favor, insira uma nota válida.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Por favor, selecione um aluno primeiro.");
+                }
             }
         });
 
-        // Configurando os manipuladores para os botões "Matricular", "Alterar", e "Excluir"
-        cadastrarButton.addActionListener(e -> JOptionPane.showMessageDialog(null, "Matriculando aluno..."));
+        cancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Operação Cancelada","Atenção",JOptionPane.ERROR_MESSAGE);
+                setVisible(false);
+                new TelaInicialFrame().setVisible(true);
+            }
+        });
 
-
-        // Exibir a janela
         setVisible(true);
+    }
+
+    private Aluno buscarAluno(String nome) {
+        List<Aluno> alunos = CadastrarAlunoFrame.getAlunosCadastrados(); // Busca na lista correta
+        for (Aluno aluno : alunos) {
+            if (aluno.getNome().equalsIgnoreCase(nome)) {
+                return aluno; // Retorna o aluno se encontrado
+            }
+        }
+        return null; // Retorna null se não encontrar
     }
 }
